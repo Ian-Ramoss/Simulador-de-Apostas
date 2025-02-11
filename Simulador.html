@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caça-Níqueis de Apostas</title>
+    <style>
+        :root {
+            --cor-primaria: #2c3e50;
+            --cor-alerta: #e74c3c;
+            --cor-sucesso: #27ae60;
+            --cor-destaque: #ffd700;
+            --cor-maquina: #3a3a3a;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            max-width: 1400px; /* Aumentei a largura máxima */
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .slot-machine {
+            background: linear-gradient(145deg, #4a4a4a, #363636);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 8px solid #2d2d2d;
+            position: relative;
+            transition: all 0.3s ease;
+            width: 100%; /* Ajustei para ocupar 100% da largura disponível */
+        }
+
+        .slot-machine:before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #5a5a5a, #3d3d3d);
+            z-index: -1;
+        }
+
+        .slot-machine.ampliado {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.1);
+            z-index: 1000;
+            width: 90%;
+            max-width: 1000px; /* Aumentei a largura máxima ao ampliar */
+        }
+
+        .slot-screen {
+            background: #1a2f3a;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 4px solid #0f212b;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            min-height: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--cor-destaque);
+            margin: 30px 0;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        .slot-header {
+            cursor: pointer;
+            padding: 15px;
+            margin: -15px -15px 15px -15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+
+        .slot-header:hover {
+            background: rgba(255,215,0,0.1);
+        }
+
+        h2 {
+            color: var(--cor-destaque);
+            margin: 0;
+            font-size: 1.8em;
+            text-shadow: 0 0 5px rgba(255,215,0,0.5);
+        }
+
+        .controles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        button {
+            background: linear-gradient(145deg, #4a4a4a, #363636);
+            color: var(--cor-destaque);
+            border: 2px solid #ffd700;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255,215,0,0.5);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            flex: 1 1 calc(50% - 10px); /* Ajuste para alinhar os botões */
+            min-width: 120px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,215,0,0.3);
+            filter: brightness(1.2);
+        }
+
+        .numeros-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            background: #1a2f3a;
+            border: 2px solid var(--cor-destaque);
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .tabela-acertos {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            background: #1a2f3a;
+            border: 2px solid #0f212b;
+        }
+
+        .tabela-acertos th, .tabela-acertos td {
+            border: 1px solid #0f212b;
+            padding: 12px;
+            text-align: center;
+            color: white;
+        }
+
+        .tabela-acertos th {
+            background: #2d2d2d;
+            color: var(--cor-destaque);
+        }
+
+        .explicacao {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid var(--cor-alerta);
+        }
+
+        .auto-jogar {
+            background: linear-gradient(145deg, #27ae60, #1e8449) !important;
+        }
+
+        .valor-inicial {
+            background: linear-gradient(145deg, #f1c40f, #c29d0b) !important;
+            color: #2c3e50 !important;
+        }
+
+        .contador-financeiro {
+            background: #1a2f3a;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #0f212b;
+        }
+
+        .dica-botao {
+            color: #888;
+            font-size: 0.9em;
+            display: block;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .aposta-selecionada {
+            border: 3px solid #27ae60 !important;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .slot-machine.ampliado {
+                width: 95%;
+                transform: translate(-50%, -50%) scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎰 SIMULADOR DE CASSINOS 🎰</h1>
+
+    <div class="container">
+        <!-- Mega-Sena -->
+        <div class="slot-machine">
+            <div class="slot-header" onclick="toggleSlot(this.parentElement)">
+                <h2>MEGA-SENA</h2>
+            </div>
+            <div class="slot-screen">
+                <div class="numeros-grid" id="megaInputs"></div>
+                
+                <div class="controles">
+                    <div>
+                        <button onclick="mega.iniciar()">▶️ INICIAR</button>
+                        <span class="dica-botao">Simulação manual</span>
+                    </div>
+                    <div>
+                        <button class="auto-jogar" onclick="mega.autoJogar()">🤖 AUTO-JOGAR</button>
+                        <span class="dica-botao">10 jogadas/segundo</span>
+                    </div>
+                    <div>
+                        <button onclick="mega.gerarNumeros()">🎲 GERAR NÚMEROS</button>
+                        <span class="dica-botao">Nova combinação</span>
+                    </div>
+                    <div>
+                        <button style="background: var(--cor-alerta);" onclick="mega.parar()">⏹️ PARAR</button>
+                        <span class="dica-botao">Interromper simulação</span>
+                    </div>
+                </div>
+
+                <div class="contador-financeiro">
+                    Jogos Realizados: <span id="megaJogos">0</span><br>
+                    Total Gasto: <span id="megaGasto">R$ 0,00</span><br>
+                    Prêmios Recebidos: <span id="megaPremios">R$ 0,00</span><br>
+                    Lucro/Prejuízo: <span id="megaLucro">R$ 0,00</span>
+                </div>
+
+                <table class="tabela-acertos">
+                    <tr><th>Acertos</th><th>Quantidade</th></tr>
+                    <tr><td>6</td><td id="mega6">0</td></tr>
+                    <tr><td>5</td><td id="mega5">0</td></tr>
+                    <tr><td>4</td><td id="mega4">0</td></tr>
+                    <tr><td>3</td><td id="mega3">0</td></tr>
+                    <tr><td>2</td><td id="mega2">0</td></tr>
+                    <tr><td>1</td><td id="mega1">0</td></tr>
+                </table>
+
+                <div class="explicacao">
+                    <h3>📉 Realidade Matemática</h3>
+                    <p>• Probabilidade de acertar 6 números: 1 em 50.063.860<br>
+                    • Apostando 1 jogo/dia: 137.160 anos para 50 milhões de tentativas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lotofácil -->
+        <div class="slot-machine">
+            <div class="slot-header" onclick="toggleSlot(this.parentElement)">
+                <h2>LOTOFÁCIL</h2>
+            </div>
+            <div class="slot-screen">
+                <div class="numeros-grid" id="lotoInputs"></div>
+                
+                <div class="controles">
+                    <div>
+                        <button onclick="loto.iniciar()">▶️ INICIAR</button>
+                        <span class="dica-botao">Simulação manual</span>
+                    </div>
+                    <div>
+                        <button class="auto-jogar" onclick="loto.autoJogar()">🤖 AUTO-JOGAR</button>
+                        <span class="dica-botao">10 jogadas/segundo</span>
+                    </div>
+                    <div>
+                        <button onclick="loto.gerarNumeros()">🎲 GERAR NÚMEROS</button>
+                        <span class="dica-botao">Nova combinação</span>
+                    </div>
+                    <div>
+                        <button style="background: var(--cor-alerta);" onclick="loto.parar()">⏹️ PARAR</button>
+                        <span class="dica-botao">Interromper simulação</span>
+                    </div>
+                </div>
+
+                <div class="contador-financeiro">
+                    Jogos Realizados: <span id="lotoJogos">0</span><br>
+                    Total Gasto: <span id="lotoGasto">R$ 0,00</span><br>
+                    Prêmios Recebidos: <span id="lotoPremios">R$ 0,00</span><br>
+                    Lucro/Prejuízo: <span id="lotoLucro">R$ 0,00</span>
+                </div>
+
+                <table class="tabela-acertos">
+                    <tr><th>Acertos</th><th>Quantidade</th></tr>
+                    <tr><td>15</td><td id="loto15">0</td></tr>
+                    <tr><td>14</td><td id="loto14">0</td></tr>
+                    <tr><td>13</td><td id="loto13">0</td></tr>
+                    <tr><td>12</td><td id="loto12">0</td></tr>
+                    <tr><td>11</td><td id="loto11">0</td></tr>
+                </table>
+
+                <div class="explicacao">
+                    <h3>📊 Estatística Impactante</h3>
+                    <p>• Chance de 15 acertos: 1 em 3.268.760<br>
+                    • 1 jogo/dia = 8.953 anos para 3 milhões de tentativas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roleta -->
+        <div class="slot-machine">
+            <div class="slot-header" onclick="toggleSlot(this.parentElement)">
+                <h2>ROLETA EUROPEIA</h2>
+            </div>
+            <div class="slot-screen">
+                <div class="controles">
+                    <button class="valor-inicial" onclick="roleta.alterarSaldo(100)">R$ 100</button>
+                    <button class="valor-inicial" onclick="roleta.alterarSaldo(500)">R$ 500</button>
+                    <button class="valor-inicial" onclick="roleta.alterarSaldo(1000)">R$ 1000</button>
+                </div>
+
+                <div class="controles">
+                    <div>
+                        <button class="btn-aposta" onclick="roleta.selecionarAposta(10)">🔴 R$10</button>
+                        <button class="btn-aposta" onclick="roleta.selecionarAposta(20)">🔴 R$20</button>
+                        <button class="btn-aposta" onclick="roleta.selecionarAposta(50)">🔴 R$50</button>
+                        <button class="btn-aposta" onclick="roleta.selecionarAposta(100)">🔴 R$100</button>
+                    </div>
+                    <div>
+                        <button class="auto-jogar" onclick="roleta.iniciarAutoJogo()">🎰 INICIAR JOGO</button>
+                        <span class="dica-botao">Usa valor selecionado</span>
+                    </div>
+                    <div>
+                        <button style="background: var(--cor-alerta);" onclick="roleta.parar()">⏹️ PARAR</button>
+                        <button style="background: var(--cor-alerta);" onclick="roleta.reset()">🔄 REINICIAR</button>
+                    </div>
+                </div>
+
+                <div class="contador-financeiro">
+                    Jogos Realizados: <span id="roletaJogos">0</span><br>
+                    Aposta Atual: R$ <span id="apostaAtual">0</span><br>
+                    Total Apostado: R$ <span id="totalApostado">0,00</span><br>
+                    Lucro/Prejuízo: R$ <span id="lucroPrejuizo">0,00</span>
+                </div>
+
+                <table class="tabela-acertos">
+                    <tr><th>Estatística</th><th>Valor</th></tr>
+                    <tr><td>Saldo</td><td id="saldo">R$ 1000,00</td></tr>
+                    <tr><td>Vitórias</td><td id="vitorias">0</td></tr>
+                    <tr><td>Derrotas</td><td id="derrotas">0</td></tr>
+                </table>
+
+                <div class="explicacao">
+                    <h3>⚖️ Vantagem da Casa</h3>
+                    <p>• Edge matemático: 2.7% por aposta<br>
+                    • Em R$1.000 apostados: Casa lucra R$27</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// Função para ampliar/reduzir as máquinas
+function toggleSlot(machine) {
+    const isExpanded = machine.classList.contains('ampliado');
+    document.querySelectorAll('.slot-machine').forEach(m => m.classList.remove('ampliado'));
+    if(!isExpanded) machine.classList.add('ampliado');
+}
+
+// ========== MEGA-SENA ==========
+const mega = {
+    rodando: false,
+    intervalo: null,
+    apostas: 0,
+    acertos: [0,0,0,0,0,0,0],
+    totalGasto: 0,
+    totalPremios: 0,
+
+    init() {
+        const container = document.getElementById('megaInputs');
+        for(let i = 0; i < 6; i++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.min = 1;
+            input.max = 60;
+            input.placeholder = `N${i+1}`;
+            input.oninput = (e) => this.validarNumero(e.target);
+            container.appendChild(input);
+        }
+        this.gerarNumeros();
+    },
+
+    validarNumero(input) {
+        input.value = Math.min(60, Math.max(1, input.value || 1));
+    },
+
+    gerarNumeros() {
+        const numeros = new Set();
+        while(numeros.size < 6) numeros.add(Math.floor(Math.random() * 60) + 1);
+        const inputs = document.querySelectorAll('#megaInputs input');
+        inputs.forEach((input, i) => input.value = [...numeros][i]);
+    },
+
+    iniciar() {
+        if(!this.validarNumerosUnicos()) return alert('Selecione 6 números únicos!');
+        this.rodando = true;
+        this.simular();
+    },
+
+    validarNumerosUnicos() {
+        const numeros = new Set([...document.querySelectorAll('#megaInputs input')].map(i => parseInt(i.value)));
+        return numeros.size === 6 && ![...numeros].some(isNaN);
+    },
+
+    simular() {
+        if(!this.rodando) return;
+
+        const sorteio = new Set();
+        while(sorteio.size < 6) sorteio.add(Math.floor(Math.random() * 60) + 1);
+        
+        const userNumbers = new Set([...document.querySelectorAll('#megaInputs input')].map(i => parseInt(i.value)));
+        const acertos = [...userNumbers].filter(n => sorteio.has(n)).length;
+        const premio = this.calcularPremio(acertos);
+        
+        this.acertos[acertos]++;
+        this.apostas++;
+        this.totalGasto += 5.00;
+        this.totalPremios += premio;
+        
+        this.atualizarUI();
+        requestAnimationFrame(() => this.simular());
+    },
+
+    calcularPremio(acertos) {
+        const premios = [0, 0, 0, 0, 5.00, 1000.00, 50000000.00];
+        return premios[acertos] || 0;
+    },
+
+    autoJogar() {
+        this.rodando = !this.rodando;
+        if(this.rodando) {
+            this.intervalo = setInterval(() => this.gerarNumeros(), 100);
+            this.simular();
+        } else {
+            clearInterval(this.intervalo);
+        }
+    },
+
+    atualizarUI() {
+        document.getElementById('megaJogos').textContent = this.apostas.toLocaleString();
+        for(let i = 1; i <= 6; i++) {
+            document.getElementById(`mega${i}`).textContent = this.acertos[i].toLocaleString();
+        }
+        document.getElementById('megaGasto').textContent = this.totalGasto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        document.getElementById('megaPremios').textContent = this.totalPremios.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        document.getElementById('megaLucro').textContent = (this.totalPremios - this.totalGasto).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    },
+
+    parar() {
+        this.rodando = false;
+        clearInterval(this.intervalo);
+    }
+};
+
+// ========== LOTOFÁCIL ==========
+const loto = {
+    rodando: false,
+    intervalo: null,
+    apostas: 0,
+    acertos: new Array(16).fill(0),
+    totalGasto: 0,
+    totalPremios: 0,
+
+    init() {
+        const container = document.getElementById('lotoInputs');
+        for(let i = 0; i < 15; i++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.min = 1;
+            input.max = 25;
+            input.placeholder = `N${i+1}`;
+            input.oninput = (e) => this.validarNumero(e.target);
+            container.appendChild(input);
+        }
+        this.gerarNumeros();
+    },
+
+    validarNumero(input) {
+        input.value = Math.min(25, Math.max(1, input.value || 1));
+    },
+
+    gerarNumeros() {
+        const numeros = new Set();
+        while(numeros.size < 15) numeros.add(Math.floor(Math.random() * 25) + 1);
+        const inputs = document.querySelectorAll('#lotoInputs input');
+        inputs.forEach((input, i) => input.value = [...numeros][i]);
+    },
+
+    iniciar() {
+        if(!this.validarNumerosUnicos()) return alert('Selecione 15 números únicos!');
+        this.rodando = true;
+        this.simular();
+    },
+
+    validarNumerosUnicos() {
+        const numeros = new Set([...document.querySelectorAll('#lotoInputs input')].map(i => parseInt(i.value)));
+        return numeros.size === 15 && ![...numeros].some(isNaN);
+    },
+
+    simular() {
+        if(!this.rodando) return;
+
+        const sorteio = new Set();
+        while(sorteio.size < 15) sorteio.add(Math.floor(Math.random() * 25) + 1);
+        
+        const userNumbers = new Set([...document.querySelectorAll('#lotoInputs input')].map(i => parseInt(i.value)));
+        const acertos = [...userNumbers].filter(n => sorteio.has(n)).length;
+        const premio = this.calcularPremio(acertos);
+        
+        if(acertos >= 11) this.acertos[acertos]++;
+        this.apostas++;
+        this.totalGasto += 3.00;
+        this.totalPremios += premio;
+        
+        this.atualizarUI();
+        requestAnimationFrame(() => this.simular());
+    },
+
+    calcularPremio(acertos) {
+        const premios = [0,0,0,0,0,0,0,0,0,0,0, 5.00, 20.00, 1000.00, 50000.00, 1000000.00];
+        return premios[acertos] || 0;
+    },
+
+    autoJogar() {
+        this.rodando = !this.rodando;
+        if(this.rodando) {
+            this.intervalo = setInterval(() => this.gerarNumeros(), 100);
+            this.simular();
+        } else {
+            clearInterval(this.intervalo);
+        }
+    },
+
+    atualizarUI() {
+        document.getElementById('lotoJogos').textContent = this.apostas.toLocaleString();
+        for(let i = 11; i <= 15; i++) {
+            document.getElementById(`loto${i}`).textContent = this.acertos[i].toLocaleString();
+        }
+        document.getElementById('lotoGasto').textContent = this.totalGasto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        document.getElementById('lotoPremios').textContent = this.totalPremios.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        document.getElementById('lotoLucro').textContent = (this.totalPremios - this.totalGasto).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    },
+
+    parar() {
+        this.rodando = false;
+        clearInterval(this.intervalo);
+    }
+};
+
+// ========== ROLETA ==========
+const roleta = {
+    saldo: 1000,
+    rodando: false,
+    intervalo: null,
+    vitorias: 0,
+    derrotas: 0,
+    apostaAtual: 0,
+    totalApostado: 0,
+
+    selecionarAposta(valor) {
+        this.apostaAtual = valor;
+        document.querySelectorAll('.btn-aposta').forEach(b => b.classList.remove('aposta-selecionada'));
+        event.target.classList.add('aposta-selecionada');
+        document.getElementById('apostaAtual').textContent = valor;
+    },
+
+    iniciarAutoJogo() {
+        if(this.apostaAtual === 0) return alert('Selecione um valor primeiro!');
+        this.rodando = true;
+        this.intervalo = setInterval(() => this.jogar(), 100);
+    },
+
+    jogar() {
+        if(this.saldo < this.apostaAtual) return this.parar();
+        
+        this.saldo -= this.apostaAtual;
+        this.totalApostado += this.apostaAtual;
+        const venceu = Math.random() < 18/37;
+        
+        if(venceu) {
+            this.saldo += this.apostaAtual * 2;
+            this.vitorias++;
+        } else {
+            this.derrotas++;
+        }
+        
+        this.atualizarUI();
+    },
+
+    atualizarUI() {
+        const lucro = this.saldo - 1000;
+        document.getElementById('roletaJogos').textContent = (this.vitorias + this.derrotas).toLocaleString();
+        document.getElementById('saldo').textContent = this.saldo.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        document.getElementById('vitorias').textContent = this.vitorias;
+        document.getElementById('derrotas').textContent = this.derrotas;
+        document.getElementById('totalApostado').textContent = this.totalApostado.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        document.getElementById('lucroPrejuizo').textContent = lucro.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    },
+
+    alterarSaldo(valor) {
+        this.saldo = valor;
+        this.vitorias = 0;
+        this.derrotas = 0;
+        this.totalApostado = 0;
+        this.atualizarUI();
+    },
+
+    reset() {
+        this.saldo = 1000;
+        this.vitorias = 0;
+        this.derrotas = 0;
+        this.totalApostado = 0;
+        this.rodando = false;
+        clearInterval(this.intervalo);
+        this.atualizarUI();
+    },
+
+    parar() {
+        this.rodando = false;
+        clearInterval(this.intervalo);
+    }
+};
+
+// Inicialização
+mega.init();
+loto.init();
+roleta.reset();
+</script>
+</body>
+</html>
