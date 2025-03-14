@@ -1,4 +1,4 @@
-# 🎰 Simulador de Cassinos Didáticos
+# 🎰 Simulador Educacional de Jogos de Azar
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-blue?logo=github)](https://ian-ramoss.github.io/Simulador-de-Apostas/)
 
@@ -87,7 +87,7 @@ Este projeto visa demonstrar:
 - O efeito cumulativo dos gastos em apostas
 - A vantagem matemática da casa em jogos de azar
 - O impacto do longo prazo em estratégias de apostas
-- O poder da IA no auxílio do desenvolvimento de produtos e serviços e no nosso aprimoramento - CÓDIGO DESENVOLVIDO 100% POR IA (DEEPSEEK)
+- O poder da IA no auxílio do desenvolvimento de produtos e serviços e no nosso aprimoramento - Código desenvolvido com o auxílio de IA (DeepSeek)
 
 ## ⚠️ Aviso Importante
 
