@@ -48,6 +48,8 @@ Um simulador interativo que SIMULA a matemática por trás de jogos de azar popu
    - Escolha o valor da aposta (R$10 a R$100)
    - 🎰 Iniciar Jogo para começar
    - Acompanhe o saldo em tempo real
+     
+OBS.: PARA REINICIAR OS NÚMEROS, BASTA ATUALIZAR A PÁGINA (F5)
 
 ## 💡 Recursos Técnicos
 
